@@ -6,6 +6,8 @@ use App\Http\Resources\NewsCollection;
 use Inertia\Inertia;
 use App\Models\News;
 use App\Models\User;
+
+use Illuminate\Contracts\View\View;
 use Illuminate\Http\Request;
 
 class NewsController extends Controller
@@ -19,8 +21,8 @@ class NewsController extends Controller
     {
         $news = new NewsCollection(News::OrderByDesc('id')->paginate(8));
         return Inertia::render('Homepage', [
-            'title' => "CUY UNIVERSE HOME",
-            'description' => "Selamat Datang Di Cuy Universe News Portal",
+            'title' => "Gamingland",
+            'description' => "Portal Berita Seputar Game dan E-sport",
             'news' => $news,
         ]);
     }
@@ -45,6 +47,7 @@ class NewsController extends Controller
     {
         $news = new News();
         $news->title = $request->title;
+        $news->alt = $request->alt;
         $news->description = $request->description;
         $news->category = $request->category;
         $news->author = auth()->user()->email;
@@ -64,8 +67,45 @@ class NewsController extends Controller
         $myNews = $news::where('author', auth()->user()->email)->get();
         return Inertia::render('Dashboard', [
             'myNews' => $myNews,
+
         ]);
     }
+
+    public function sortByCategory(string $category)
+    {
+        $myNews = News::where('category', $category)->get();
+        return Inertia::render('Category', [
+            'news' => $myNews,
+            'category' => $category,
+            'title' => 'Gamingland',
+        ]);
+    }
+
+
+    public function sortByAuthor(string $author)
+    {
+        $myNews = News::where('author', $author)->get();
+        return Inertia::render('Author', [
+            'news' => $myNews,
+            'category' => $author,
+            'title' => 'Gamingland',
+        ]);
+    }
+
+    public function articleDetails(int $id)
+    {
+        $myNews = News::where('id', $id)->get();
+        return Inertia::render('ArticleDetails', [
+            'news' => $myNews,
+            'title' => 'Gamingland',
+
+        ]);
+        // return Inertia::render('ArticleDetails');
+    }
+    // Lakukan apa pun yang diperlukan dengan nilai $category di sini
+    // Contoh:
+
+
 
     /**
      * Show the form for editing the specified resource.
@@ -76,7 +116,8 @@ class NewsController extends Controller
     public function edit(News $news, Request $request)
     {
         return Inertia::render('EditNews', [
-            'myNews' => $news->find($request->id)
+            'myNews' => $news->find($request->id),
+            'title' => 'Gamingland',
         ]);
     }
 

@@ -18,9 +18,11 @@ class NewsFactory extends Factory
     {
         return [
             'title' => fake()->sentence(),
+            'alt' => fake()->sentence(5, true),
             'description' => fake()->paragraph(2, true),
-            'category' => fake()->text(20),
-            'author' => fake()->email(),
+            'category' => 'Game Console',
+            'author' => fake()->name(),
+
         ];
     }
 }
